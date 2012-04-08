@@ -28,8 +28,12 @@ namespace FalconPoint4
         public double SpeedMPH(double lat1, double lon1, double lat2, double lon2,DateTime time,DateTime time1)
         {
             TimeSpan ts = time - time1;
-          //  MessageBox.Show(Distance(lat1, lon1, lat2, lon2).ToString() + " " + ts.Hours);
-            return Math.Truncate((((((Distance(lat1, lon1, lat2, lon2) / (ts.Hours))/12)*60)*60)/5280)); //still don't know if this is right
+
+            float _distance = (float)(Distance(lat1, lat2, lon1, lon2));
+            double _time = ts.TotalHours;
+            int mph = (int)(_distance / _time);
+
+            return mph;
         }
 
         public double ToHeading(double radians)
@@ -40,18 +44,6 @@ namespace FalconPoint4
 
             public double Distance (double lat1, double lat2, double lon1, double lon2)
             {
-               // double lat1 = 34.713496;
-               // double lat2 = 34.713538;
-               // double lon1 = -86.685663;
-               // double lon2 = -86.688520;
-
-                //double dlong = (lon2 - lon1) * 0.0174532925199433;
-                //double dlat = (lat2 - lat1) * 0.0174532925199433;
-                //double a = Math.Pow(Math.Sin(dlat / 2.0), 2) + Math.Cos(lat1 * 0.0174532925199433) * Math.Cos(lat2 * 0.0174532925199433) * Math.Pow(Math.Sin(dlong / 2.0), 2);
-                //double c = 2 * Math.Atan2(Math.Sqrt(a), Math.Sqrt(1 - a));
-                //double d = 3956 * c; 
-
-
                 double theta = lon1 - lon2;
                 double dist = Math.Sin(deg2rad(lat1)) * Math.Sin(deg2rad(lat2)) + Math.Cos(deg2rad(lat1)) * Math.Cos(deg2rad(lat2)) * Math.Cos(deg2rad(theta));
                 dist = Math.Acos(dist);

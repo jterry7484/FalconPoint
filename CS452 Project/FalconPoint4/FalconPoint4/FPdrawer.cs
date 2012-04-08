@@ -25,7 +25,7 @@ namespace FalconPoint4
 
 
         //Austen: changed input params to pass entire layer list so that we'd have access to all it's values
-        public void CreatePoint(ILayer FP_point, int layer, LayerList layerList, string id, double lat, double lon,string time)
+        public void CreatePoint(ILayer FP_point, int layer, LayerList layerList, string id, double lat, double lon, DateTime time)
         {
             try
             {
@@ -40,7 +40,7 @@ namespace FalconPoint4
                     DateTime time1 = layerList.FP_LatLonlist[layerList.FP_LatLonlist.Count - 1].time;
 
                     double heading = logistics.Heading(lat, lon, lat1, lon1); //Compute heading
-                    double speed = logistics.SpeedMPH(lat, lon, lat1, lon1, Convert.ToDateTime(time), time1); //Compute Speed
+                    double speed = logistics.SpeedMPH(lat, lon, lat1, lon1, time, time1); //Compute Speed
                     RenderArrow(FP_point, layerList, lat, lon, time, heading);
 
 
@@ -57,15 +57,17 @@ namespace FalconPoint4
             }
         }
 
-        public void RenderArrow(ILayer FP_point, LayerList layerList, double lat, double lon,string time,double heading)
+        public void RenderArrow(ILayer FP_point, LayerList layerList, double lat, double lon, DateTime time, double heading)
         {
+            int mainLineHandle = 0;
 
             FP_point.SetLineType(layerList.Layer, 104); //Doesn't do crap...
         
             int symbolHandle = FP_point.CreateSymbol("arrow", 0);  //Create symbol 0 = doesn't already exist
 
             //add line to symbol from pixel 0,0 to 0,1 (use this to change where degree 0 is)
-            FP_point.AddLineToSymbol(symbolHandle, 0, 0, 0, 1);
+            mainLineHandle = FP_point.AddLineToSymbol(symbolHandle, 0, 0, 0, 1);
+            FP_point.AddLineToSymbol(mainLineHandle, 1, 0, 1, 0);
 
             //add created symbol to layer with lat long and rotation
             FP_point.AddSymbol(layerList.Layer, symbolHandle, lat, lon, 20, heading);                                                    

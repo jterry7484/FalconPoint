@@ -75,3 +75,14 @@ C:\Users\Administrator\Dropbox\cs452 shared\zzz_CurrentFalconPoint Solution 3_26
 C:\Users\Administrator\Dropbox\cs452 shared\zzz_CurrentFalconPoint Solution 3_26_12\FalconPoint4_Austen\FalconPoint4\obj\Debug\FalconPoint4.csproj.ResolveComReference.cache
 C:\Users\Administrator\Dropbox\cs452 shared\zzz_CurrentFalconPoint Solution 3_26_12\FalconPoint4_Austen\FalconPoint4\obj\Debug\FalconPoint4.dll
 C:\Users\Administrator\Dropbox\cs452 shared\zzz_CurrentFalconPoint Solution 3_26_12\FalconPoint4_Austen\FalconPoint4\obj\Debug\FalconPoint4.pdb
+C:\Workspace\CS452 Project\FalconPoint4\FalconPoint4\bin\Debug\FalconPoint4.dll
+C:\Workspace\CS452 Project\FalconPoint4\FalconPoint4\bin\Debug\FalconPoint4.pdb
+C:\Workspace\CS452 Project\FalconPoint4\FalconPoint4\bin\Debug\FalconPoint4.tlb
+C:\Workspace\CS452 Project\FalconPoint4\FalconPoint4\bin\Debug\Interop.fvw.dll
+C:\Workspace\CS452 Project\FalconPoint4\FalconPoint4\bin\Debug\Interop.MAPENGINELib.dll
+C:\Workspace\CS452 Project\FalconPoint4\FalconPoint4\obj\Debug\ResolveAssemblyReference.cache
+C:\Workspace\CS452 Project\FalconPoint4\FalconPoint4\obj\Debug\Interop.fvw.dll
+C:\Workspace\CS452 Project\FalconPoint4\FalconPoint4\obj\Debug\Interop.MAPENGINELib.dll
+C:\Workspace\CS452 Project\FalconPoint4\FalconPoint4\obj\Debug\FalconPoint4.csproj.ResolveComReference.cache
+C:\Workspace\CS452 Project\FalconPoint4\FalconPoint4\obj\Debug\FalconPoint4.dll
+C:\Workspace\CS452 Project\FalconPoint4\FalconPoint4\obj\Debug\FalconPoint4.pdb
