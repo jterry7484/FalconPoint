@@ -23,7 +23,14 @@ namespace CoT_Simulator
         private bool loaded_cot_flag = false;
         private int timeOut = 2000;
 
-        
+        /* SAMPLE COTS INPUT
+            <event version="2.0" uid="****" how="m-r" time="2012-01-29T00:07:06Z" stale="2012-01-29T00:47:06Z" type="a-f-G" start="2012-01-29T00:07:06Z">
+                <detail></detail>
+                <point hae="0" lat="34.717305" lon="-86.676109" ce="25" le="10" />
+            </event>
+         */
+
+
         public Form1()
         {
             InitializeComponent();
@@ -93,6 +100,30 @@ namespace CoT_Simulator
                 MessageBox.Show("unknown line " + current_line.ToString());
         }
 
+        // Changes stale time to current time, so that we appear to be sending stale data
+        private string UpdateStaleTime(string _text)
+        {
+            string current_lineMod = _text;
+            string _time = null;
+
+            if(current_lineMod.Contains("stale=") == true && current_lineMod.Contains("time=") == true); // be sure that we are on a line that has a line called stale & time
+            {
+                _time = current_lineMod.Remove(0, current_lineMod.IndexOf("time")); // remove everything to the left of time field
+                _time = _time.Remove(0, _time.IndexOf("\"")+1); // remove "time=" from string
+                _time = _time.Remove(_time.IndexOf("\"")); // remove everything after the quote at the end of time
+
+                int wheresStale = current_lineMod.IndexOf("stale");
+
+                current_lineMod = current_lineMod.Remove(wheresStale + 6, 22); // remove stale time stamp
+
+                _time = "\"" + _time + "\"";
+
+                current_lineMod = current_lineMod.Insert(wheresStale + 6, _time); // insert _time where stale used to be
+            }
+
+            return current_lineMod;
+
+        }
 
         private void combine_line()
         {
@@ -126,8 +157,6 @@ namespace CoT_Simulator
 
         } // End backgroundworker1_DoWork
 
-
-
         private void TCP()
         {
             int port = Convert.ToInt32(TB_port.Text);
@@ -144,19 +173,19 @@ namespace CoT_Simulator
 
                 NetworkStream clientStream = client.GetStream();
 
-                //ASCIIEncoding encoder = new ASCIIEncoding();
-                //byte[] buffer = encoder.GetBytes("Hello Server!");
-
-                //clientStream.Write(buffer, 0, buffer.Length);
-                //clientStream.Flush();
-
                 ASCIIEncoding encoder = new ASCIIEncoding();
                 bool restart = CB_loop.Checked;
                 do
                 {
+                  
                     foreach (string text in event_list)
                     {
-                        byte[] buffer = encoder.GetBytes(text);
+                        string outputTxt = text;
+
+                        if (staleData.Checked == true) // this means that we need to change the stale data time to equal the current time, so that it appears to be stale
+                           outputTxt = UpdateStaleTime(text);
+
+                        byte[] buffer = encoder.GetBytes(outputTxt);
                         clientStream.Write(buffer, 0, buffer.Length);
                         System.Threading.Thread.Sleep(sleep_length);
                     }

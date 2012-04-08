@@ -46,6 +46,7 @@
             this.CB_loop = new System.Windows.Forms.CheckBox();
             this.rbTCP = new System.Windows.Forms.RadioButton();
             this.rbUDP = new System.Windows.Forms.RadioButton();
+            this.staleData = new System.Windows.Forms.CheckBox();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -176,7 +177,7 @@
             this.CB_loop.AutoSize = true;
             this.CB_loop.Checked = true;
             this.CB_loop.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.CB_loop.Location = new System.Drawing.Point(16, 141);
+            this.CB_loop.Location = new System.Drawing.Point(16, 164);
             this.CB_loop.Name = "CB_loop";
             this.CB_loop.Size = new System.Drawing.Size(75, 17);
             this.CB_loop.TabIndex = 17;
@@ -187,7 +188,7 @@
             // 
             this.rbTCP.AutoSize = true;
             this.rbTCP.Checked = true;
-            this.rbTCP.Location = new System.Drawing.Point(97, 141);
+            this.rbTCP.Location = new System.Drawing.Point(139, 140);
             this.rbTCP.Name = "rbTCP";
             this.rbTCP.Size = new System.Drawing.Size(61, 17);
             this.rbTCP.TabIndex = 18;
@@ -198,18 +199,29 @@
             // rbUDP
             // 
             this.rbUDP.AutoSize = true;
-            this.rbUDP.Location = new System.Drawing.Point(97, 164);
+            this.rbUDP.Location = new System.Drawing.Point(139, 163);
             this.rbUDP.Name = "rbUDP";
             this.rbUDP.Size = new System.Drawing.Size(48, 17);
             this.rbUDP.TabIndex = 18;
             this.rbUDP.Text = "UDP";
             this.rbUDP.UseVisualStyleBackColor = true;
             // 
+            // staleData
+            // 
+            this.staleData.AutoSize = true;
+            this.staleData.Location = new System.Drawing.Point(16, 141);
+            this.staleData.Name = "staleData";
+            this.staleData.Size = new System.Drawing.Size(106, 17);
+            this.staleData.TabIndex = 19;
+            this.staleData.Text = "Make Data Stale";
+            this.staleData.UseVisualStyleBackColor = true;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(302, 284);
+            this.Controls.Add(this.staleData);
             this.Controls.Add(this.rbUDP);
             this.Controls.Add(this.rbTCP);
             this.Controls.Add(this.CB_loop);
@@ -251,6 +263,7 @@
         private System.Windows.Forms.CheckBox CB_loop;
         private System.Windows.Forms.RadioButton rbTCP;
         private System.Windows.Forms.RadioButton rbUDP;
+        private System.Windows.Forms.CheckBox staleData;
 
     }
 }
