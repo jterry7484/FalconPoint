@@ -44,6 +44,8 @@
             this.TB_UID = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
             this.CB_loop = new System.Windows.Forms.CheckBox();
+            this.rbTCP = new System.Windows.Forms.RadioButton();
+            this.rbUDP = new System.Windows.Forms.RadioButton();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -181,11 +183,35 @@
             this.CB_loop.Text = "Loop File?";
             this.CB_loop.UseVisualStyleBackColor = true;
             // 
+            // rbTCP
+            // 
+            this.rbTCP.AutoSize = true;
+            this.rbTCP.Checked = true;
+            this.rbTCP.Location = new System.Drawing.Point(97, 141);
+            this.rbTCP.Name = "rbTCP";
+            this.rbTCP.Size = new System.Drawing.Size(61, 17);
+            this.rbTCP.TabIndex = 18;
+            this.rbTCP.TabStop = true;
+            this.rbTCP.Text = "TCP/IP";
+            this.rbTCP.UseVisualStyleBackColor = true;
+            // 
+            // rbUDP
+            // 
+            this.rbUDP.AutoSize = true;
+            this.rbUDP.Location = new System.Drawing.Point(97, 164);
+            this.rbUDP.Name = "rbUDP";
+            this.rbUDP.Size = new System.Drawing.Size(48, 17);
+            this.rbUDP.TabIndex = 18;
+            this.rbUDP.Text = "UDP";
+            this.rbUDP.UseVisualStyleBackColor = true;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(302, 284);
+            this.Controls.Add(this.rbUDP);
+            this.Controls.Add(this.rbTCP);
             this.Controls.Add(this.CB_loop);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.label3);
@@ -223,6 +249,8 @@
         private System.Windows.Forms.TextBox TB_UID;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.CheckBox CB_loop;
+        private System.Windows.Forms.RadioButton rbTCP;
+        private System.Windows.Forms.RadioButton rbUDP;
 
     }
 }

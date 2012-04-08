@@ -114,6 +114,22 @@ namespace CoT_Simulator
 
         public void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
         {
+            if (rbTCP.Checked)
+            {
+                TCP();
+            }
+            else
+            {
+                UDP();
+            }
+
+
+        } // End backgroundworker1_DoWork
+
+
+
+        private void TCP()
+        {
             int port = Convert.ToInt32(TB_port.Text);
             IPAddress serverAddr = IPAddress.Parse(TB_IP.Text);
 
@@ -151,39 +167,35 @@ namespace CoT_Simulator
             {
                 MessageBox.Show("Server error... be sure that FalconPoint is running on destination computer.");
             }
+        }
 
+        private void UDP()
+        {
+             try
+             {
+                 int port = Convert.ToInt32(TB_port.Text);
 
+                 Socket sock = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+                 IPAddress serverAddr = IPAddress.Parse(TB_IP.Text);
+                 IPEndPoint endPoint = new IPEndPoint(serverAddr, port);
 
-        } // End backgroundworker1_DoWork
+                 bool restart = CB_loop.Checked;
+                 do
+                 {
+                     foreach (string text in event_list)
+                     {
+                         byte[] send_buffer = Encoding.ASCII.GetBytes(text);
 
+                         sock.SendTo(send_buffer, endPoint);
 
-        //public void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
-        //{
-        //    try
-        //    {
-        //        int port = Convert.ToInt32(TB_port.Text);
-
-        //        Socket sock = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
-        //        IPAddress serverAddr = IPAddress.Parse(TB_IP.Text);
-        //        IPEndPoint endPoint = new IPEndPoint(serverAddr, port);
-
-        //        bool restart = CB_loop.Checked;
-        //        do
-        //        {
-        //            foreach (string text in event_list)
-        //            {
-        //                byte[] send_buffer = Encoding.ASCII.GetBytes(text);
-
-        //                sock.SendTo(send_buffer, endPoint);
-
-        //                System.Threading.Thread.Sleep(sleep_length);
-        //            }
-        //        } while (restart == true);
-        //    }
-        //    catch (IOException)
-        //    {
-        //    }
-        //}
+                         System.Threading.Thread.Sleep(sleep_length);
+                     }
+                 } while (restart == true);
+             }
+             catch (IOException)
+             {
+             }
+        }
 
         private void random_num_button(object sender, EventArgs e)
         {
