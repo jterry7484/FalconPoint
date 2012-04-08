@@ -17,21 +17,26 @@ namespace FalconPoint4
         {
 
             if (System.Environment.Is64BitOperatingSystem == true)
-                iconLoc = "C:\\Program Files (x86)\\PFPS\\falcon\\data\\icons\\Localpnt\\NFZ.ico";
+                iconLoc = "C:\\Program Files (x86)\\PFPS\\falcon\\data\\icons\\Shape\\";
             else
-                iconLoc = "C:\\Program Files\\PFPS\\falcon\\data\\icons\\Localpnt\\NFZ.ico";
-
+                iconLoc = "C:\\Program Files\\PFPS\\falcon\\data\\icons\\Shape\\";
+            
         }
 
 
         //Austen: changed input params to pass entire layer list so that we'd have access to all it's values
-        public void CreatePoint(ILayer FP_point, int layer, LayerList layerList, string id, double lat, double lon, DateTime time)
+        public void CreatePoint(ILayer FP_point, int layer, LayerList layerList, string id, double lat, double lon, DateTime time, bool isStale)
         {
+            if (isStale == false)
+                iconLoc += "red turn.ico";
+            else
+                iconLoc += "white turn.ico";
+
             try
             {
                 FP_point.DeleteAllObjects(layer);// delete everything on this layer.. keeps us from having bread crumbs 
               
-                FP_point.AddIcon(layer, iconLoc, lat, lon, id);
+                FP_point.AddIcon(layer, iconLoc, lat, lon, "");
 
                 if (layerList.FP_LatLonlist.Count > 1)
                 {
@@ -43,9 +48,9 @@ namespace FalconPoint4
                     double speed = logistics.SpeedMPH(lat, lon, lat1, lon1, time, time1); //Compute Speed
                     RenderArrow(FP_point, layerList, lat, lon, time, heading);
 
-
+                    AddUIDText(FP_point, layerList, lat, lon, heading, id);
                     AddHeadingText(FP_point, layerList, lat, lon, heading);
-                    AddSpeedText(FP_point, layerList, lat, lon, speed);
+                    AddSpeedText(FP_point, layerList, lat, lon, speed, heading);
                 }
 
                 FP_point.Refresh(-1);
@@ -59,31 +64,41 @@ namespace FalconPoint4
 
         public void RenderArrow(ILayer FP_point, LayerList layerList, double lat, double lon, DateTime time, double heading)
         {
-            int mainLineHandle = 0;
-
-            FP_point.SetLineType(layerList.Layer, 104); //Doesn't do crap...
-        
+      
             int symbolHandle = FP_point.CreateSymbol("arrow", 0);  //Create symbol 0 = doesn't already exist
 
             //add line to symbol from pixel 0,0 to 0,1 (use this to change where degree 0 is)
-            mainLineHandle = FP_point.AddLineToSymbol(symbolHandle, 0, 0, 0, 1);
-            FP_point.AddLineToSymbol(mainLineHandle, 1, 0, 1, 0);
+            FP_point.AddLineToSymbol(symbolHandle, 0, 0, 0, 2);
+            FP_point.AddLineToSymbol(symbolHandle, 0, 2, 1, 1);
+            FP_point.AddLineToSymbol(symbolHandle, 0, 2, -1, 1);
 
             //add created symbol to layer with lat long and rotation
             FP_point.AddSymbol(layerList.Layer, symbolHandle, lat, lon, 20, heading);                                                    
 
         }
 
-        public void AddSpeedText(ILayer FP_point, LayerList layerList, double lat, double lon, double speed)
+        public void AddUIDText(ILayer FP_point, LayerList layerList, double lat, double lon, double heading, string id)
         {
-            FP_point.AddText(layerList.Layer, lat, lon, speed + " MPH", -13, -45);
+            FP_point.AddText(layerList.Layer, lat, lon, id, OffsetText(heading), -70);
+        }
+
+        public void AddSpeedText(ILayer FP_point, LayerList layerList, double lat, double lon, double speed, double heading)
+        {
+            FP_point.AddText(layerList.Layer, lat, lon, speed + " MPH", OffsetText(heading), -55);
         }
 
         public void AddHeadingText(ILayer FP_point, LayerList layerList, double lat, double lon, double heading)
         {
-            FP_point.AddText(layerList.Layer, lat, lon, heading + "°", -13, -35); // -13,-35 sets position of text
+            FP_point.AddText(layerList.Layer, lat, lon, heading + "°", OffsetText(heading), -40); // -13,-35 sets position of text
         }
 
+        public int OffsetText(double heading)
+        {
+            if (heading > 140 && heading < 220)
+                return -60;
+
+            return -13;
+        }
 
     }
 }

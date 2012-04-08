@@ -55,6 +55,7 @@
     <Compile Include="COTsListener.cs" />
     <Compile Include="FPdrawer.cs" />
     <Compile Include="FPmain.cs" />
+    <Compile Include="KeyListener.cs" />
     <Compile Include="Logistics.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

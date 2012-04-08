@@ -76,6 +76,7 @@ namespace FalconPoint4
         {
             dispatch_pointer = this;
             COTsListener listen = new COTsListener(this);
+            KeyListener kybdShortcuts = new KeyListener();
         }
 
         public void GetEditorName(ref string editor_name)
@@ -92,13 +93,13 @@ namespace FalconPoint4
         public void GetEditorToolbarButton(ref string button_filename)
         {
             // TODO add custom button
-            button_filename = "";
+            button_filename = "C:\\Program Files\\PFPS\\falcon\\data\\icons\\Shape\\red turn.ico";
         }
 
         public void GetIconName(ref string icon_name)
         {
             // TODO add custom button
-            icon_name = "";
+            icon_name = "C:\\Program Files\\PFPS\\falcon\\data\\icons\\Shape\\red turn.ico";
         }
 
         public void GetNextNewFileName(ref string next_new_filename)
@@ -173,7 +174,6 @@ namespace FalconPoint4
 
         public void OnKeyDown(int layer_handle, int character, int flags, ref int result)
         {
-
         }
 
         public void OnKeyUp(int layer_handle, int character, int flags, ref int result)

@@ -24,38 +24,6 @@ namespace FalconPoint4
             public DateTime time;
         }
     }
-
-    // Calculates Distance between 2 lat & lon points
-    class Haversine
-    {
-        public double Distance() // double lat1, double lat2, double lon1, double lon2
-        {
-            double lat1 = 34.713496;
-            double lat2 = 34.713538;
-            double lon1 = -86.685663;
-            double lon2 = -86.688520;
-
-            double theta = lon1 - lon2;
-            double dist = Math.Sin(deg2rad(lat1)) * Math.Sin(deg2rad(lat2)) + Math.Cos(deg2rad(lat1)) * Math.Cos(deg2rad(lat2)) * Math.Cos(deg2rad(theta));
-            dist = Math.Acos(dist);
-            dist = rad2deg(dist);
-            dist = dist * 60 * 1.1515;
-            dist = dist * .8684;
-
-            return dist;
-        }
-
-        private double deg2rad(double deg)
-        {
-            return (deg * Math.PI / 180.0);
-        }
-
-        private double rad2deg(double rad)
-        {
-            return (rad / Math.PI * 180.0);
-        }
-    }
-
     // Listens for feeds on a port.  If a feed is detected, then it starts the plotting process by calling FPdrawer
     class COTsListener
     {
@@ -85,15 +53,19 @@ namespace FalconPoint4
         // On its own thread, listens for incoming feeds
         private void ListenForClients()
         {
-            this.tcpListner.Start();
-
-            while (true)
+            try
             {
-                TcpClient client = this.tcpListner.AcceptTcpClient();
+                this.tcpListner.Start();
 
-                Thread clientThread = new Thread(new ParameterizedThreadStart(HandleClientComm));
-                clientThread.Start(client);
+                while (true)
+                {
+                    TcpClient client = this.tcpListner.AcceptTcpClient();
+
+                    Thread clientThread = new Thread(new ParameterizedThreadStart(HandleClientComm));
+                    clientThread.Start(client);
+                }
             }
+            catch { }
         }
 
         // Once a feed has been detected, this method deals with it
@@ -104,6 +76,7 @@ namespace FalconPoint4
             double currentLon;
             string currentID;
             DateTime currentTime;
+            DateTime staleTime;
 
             TcpClient tcpClient = (TcpClient)client;
             NetworkStream clienStream = tcpClient.GetStream();
@@ -144,9 +117,9 @@ namespace FalconPoint4
                 currentLat = GetLat(messageString);
                 currentLon = GetLon(messageString);
                 currentTime = GetTime(messageString);
+                staleTime = GetStaleTime(messageString);
 
-
-                AddCordsToList_andDraw(currentID, currentLat, currentLon, currentTime);
+                AddCordsToList_andDraw(currentID, currentLat, currentLon, currentTime, staleTime);
             }
 
             tcpClient.Close();
@@ -157,20 +130,25 @@ namespace FalconPoint4
          * If it doesn't, then create a new item in the list
          * After items are added to list, then call FP_drawer
          */
-        public void AddCordsToList_andDraw(string _cotID, double _lat, double _lon, DateTime time)
+        public void AddCordsToList_andDraw(string _cotID, double _lat, double _lon, DateTime time, DateTime staleTime)
         {
             //Haversine newDistance = new Haversine();
 
             //double distance = newDistance.Distance();
 
             bool cotID_alreadyExists = false;
+            bool isDataStale = false;
+
+            if (staleTime <= time)
+                isDataStale = true;
 
             for(int i=0; i<FP_layerList.Count; i++) // itterate through list to see if the current cotID has already been added to list
             {
                 if (FP_layerList[i].cotID == _cotID) // if we already have this cotID in our list
                 {
                     FPdrawer drawPT_instance = new FPdrawer(); // create a new instance of the drawer class
-                    drawPT_instance.CreatePoint(FP_point,FP_layerList[i].Layer, FP_layerList[i], _cotID, _lat, _lon, time); // if cot uid already exists in list, then use it's layer
+
+                    drawPT_instance.CreatePoint(FP_point,FP_layerList[i].Layer, FP_layerList[i], _cotID, _lat, _lon, time, isDataStale); // if cot uid already exists in list, then use it's layer
 
                     LayerList.LatLongList temp_latLonList = new LayerList.LatLongList(); // temp list used to add lat and lon to our sub list... basically one main list holds LAYER and COTid and that list conists of another list that stores multiple lat, lon and times
                     temp_latLonList.lat = _lat;
@@ -188,7 +166,7 @@ namespace FalconPoint4
             {
                 CreateLayer(_cotID); // if we don't have this cotID, then we need to create a new layer
                 FPdrawer drawPT_instance = new FPdrawer(); // create a new instance of the drawer class
-                drawPT_instance.CreatePoint(FP_point, currentLayerHandle,new LayerList(), _cotID, _lat, _lon, time); // use the newly created layer
+                drawPT_instance.CreatePoint(FP_point, currentLayerHandle,new LayerList(), _cotID, _lat, _lon, time, isDataStale); // use the newly created layer
             }
         }
 
@@ -254,6 +232,31 @@ namespace FalconPoint4
 
             _date = _rtnString.Remove(_rtnString.IndexOf('T')); // adds everthing before the T to the _date string
             _time = _rtnString.Remove(0, _rtnString.IndexOf('T')+1); // adds everthing after the T to the _time string
+
+            _rtnString = _date + " " + _time;
+            _rtnTime = Convert.ToDateTime(_rtnString);
+
+            return _rtnTime;
+        }
+
+        public DateTime GetStaleTime(string _message)
+        {
+            // Data from feed looks like this -> stale="2012-01-29T00:47:46Z"
+            string _rtnString = _message.TrimEnd('\0');
+            int wheresTime = _rtnString.IndexOf("stale=") + 1;
+            int whereFirstQuote = _rtnString.IndexOf("\"", wheresTime);
+            int wheresLastQuote = _rtnString.IndexOf("\"", whereFirstQuote + 1);
+            string _time = null;
+            string _date = null;
+            DateTime _rtnTime;
+
+            _rtnString = _rtnString.Remove(wheresLastQuote, (_rtnString.Length - wheresLastQuote)); // get rid stuff to the right of field "time"
+            _rtnString = _rtnString.TrimEnd('Z'); // trim the z off the end
+
+            _rtnString = _rtnString.Remove(0, whereFirstQuote + 1); // get rid of stuff to the left of field "time"
+
+            _date = _rtnString.Remove(_rtnString.IndexOf('T')); // adds everthing before the T to the _date string
+            _time = _rtnString.Remove(0, _rtnString.IndexOf('T') + 1); // adds everthing after the T to the _time string
 
             _rtnString = _date + " " + _time;
             _rtnTime = Convert.ToDateTime(_rtnString);
