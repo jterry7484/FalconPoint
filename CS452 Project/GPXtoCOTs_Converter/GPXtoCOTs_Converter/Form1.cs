@@ -21,7 +21,7 @@ namespace GPXtoCOTs_Converter
         public string longitude;
         public string time;
         public string stale_time;
-        public int how_long_for_stale = 40;
+        public TimeSpan how_long_for_stale = new TimeSpan(0, 0, 40);
         public bool first_line = true;
 
             public Form1()
@@ -155,13 +155,27 @@ namespace GPXtoCOTs_Converter
         }
 
         private void set_stale_time()
-        {
-            string min = (time.Substring(time.IndexOf(':')+1, 2));
-            int new_time = Convert.ToInt32(min) + how_long_for_stale;
-            min = new_time.ToString();
-            stale_time = time.Remove(time.IndexOf(':')+1, 2);
-            stale_time = stale_time.Insert(stale_time.IndexOf(':')+1, min);
-        }
+        { 
+            // looks like this coming in -> 2012-01-29T00:07:01Z
+            string Staledate = time.Remove(time.IndexOf('T')); // remove everything after the T
+            string Staletime = time.Remove(0, time.IndexOf('T')); // remove everthing after the T
+            Staletime = Staletime.TrimStart('T');
+            Staletime = Staletime.TrimEnd('Z');
+
+            // convert to time & add the number of seconds for stale
+            DateTime _timeConverted = Convert.ToDateTime(time);
+            _timeConverted = _timeConverted + how_long_for_stale;
+
+            // pull time out of newly created time stamp | currently looks like this -> 1/28/2012 6:07:41 PM
+            Staletime = _timeConverted.ToString();
+            Staletime = Staletime.Remove(0, Staletime.IndexOf(':')+1); // remove everything up to the first colon
+            Staletime = Staletime.Remove(Staletime.Length - 3);
+
+            // put everything back together again to look like -> 2012-01-29T00:07:41Z
+            stale_time = (time.Remove(time.IndexOf(':') + 1)); // removes everything after first colon
+            stale_time += Staletime + "Z";
+            
+            }
 
         //// change < & > to xml escape sequence
         //private string replace_xml_symbols(string _txt)
