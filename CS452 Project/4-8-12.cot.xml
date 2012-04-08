@@ -1,8 +1,4 @@
 <?xml version='1.0' standalone='yes'?>
-<event version="2.0" uid="****" how="m-r" time="" stale="" type="a-f-G" start="">
-<detail></detail>
-<point hae="0" lat="" lon="" ce="25" le="10" />
-</event>
 <?xml version='1.0' standalone='yes'?>
 <event version="2.0" uid="****" how="m-r" time="2012-01-29T00:07:01Z" stale="2012-01-29T00:07:41Z" type="a-f-G" start="2012-01-29T00:07:01Z">
 <detail></detail>
